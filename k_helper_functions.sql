@@ -38,36 +38,36 @@ IS
 END K_HELPER_FUNCTIONS;
 /
 
-CREATE OR REPLACE PACKAGE BODY MY_SCHEMA.K_HELPER_FUNCTIONS
-IS
+	CREATE OR REPLACE PACKAGE BODY MY_SCHEMA.K_HELPER_FUNCTIONS
+	IS
 
 
-	PROCEDURE p_csv_add_column(file_name in varchar2,column_string in varchar2) 
-	IS 
-		--CREATED: Greg Bowen
-		--DATE: 4/25/2019
-		--DESCRIPTION: adds an additional column to a csv file with a given string. use null for empty column. 
-		v_file_output		   	UTL_FILE.file_type; 
-		v_pathout			   	varchar2(50);
-		v_file				  	array_type := array_type();
-	BEGIN
+		PROCEDURE p_csv_add_column(file_name in varchar2,column_string in varchar2) 
+		IS 
+			--CREATED: Greg Bowen
+			--DATE: 4/25/2019
+			--DESCRIPTION: adds an additional column to a csv file with a given string. use null for empty column. 
+			v_file_output		   	UTL_FILE.file_type; 
+			v_pathout			   	varchar2(50);
+			v_file				  	array_type := array_type();
+		BEGIN
 
-	v_file := MY_SCHEMA.K_HELPER_FUNCTIONS.F_FILE_TO_ARRAY_OF_LINES(file_name, 'N');
+		v_file := MY_SCHEMA.K_HELPER_FUNCTIONS.F_FILE_TO_ARRAY_OF_LINES(file_name, 'N');
 
-	v_pathout	   := '/u03/export/' || upper(ua_baninst1.f_getinstance);
-	v_file_output   := UTL_FILE.FOPEN(v_pathout,file_name,'w');
+		v_pathout	   := '/u03/export/' || upper(ua_baninst1.f_getinstance);
+		v_file_output   := UTL_FILE.FOPEN(v_pathout,file_name,'w');
 
-	for i in 1..v_file.count LOOP
-		UTL_FILE.PUT_LINE(v_file_output, v_file(i)||','||column_string);   
-	END LOOP;
+		for i in 1..v_file.count LOOP
+			UTL_FILE.PUT_LINE(v_file_output, v_file(i)||','||column_string);   
+		END LOOP;
 
-	UTL_FILE.FCLOSE(v_file_output);
-
-EXCEPTION 
-	WHEN OTHERS THEN
 		UTL_FILE.FCLOSE(v_file_output);
-		DBMS_OUTPUT.PUT_LINE('ERROR in p_csv_add_column - '|| SQLERRM);
-END;
+
+	EXCEPTION 
+		WHEN OTHERS THEN
+			UTL_FILE.FCLOSE(v_file_output);
+			DBMS_OUTPUT.PUT_LINE('ERROR in p_csv_add_column - '|| SQLERRM);
+	END;
 
 
 	PROCEDURE p_string_in_file_dbms (p_file_name in varchar2,p_location in varchar2, p_string in varchar2, p_found_message in varchar2, p_fail_message in varchar2) 
