@@ -46,28 +46,37 @@ int length(char* line){
 	return strlen(line);
 }
 
-int getFileLineCount(char* fileName){
+char* getFileDimensions(char* fileName){
 	FILE *stream = fopen(fileName,"r");
 	if (stream == NULL)
 		return 0;
+	int dimensions[2];
+	int max=0;
 	char *line = NULL;
 	int lines = 0;
 	size_t len = 0, read;
-	while ((read = getline(&line, &len, stream)) != -1)
+	while ((read = getline(&line, &len, stream)) != -1){
 		++lines;
+		if(read>max)
+			max = read;
+	}
 	fclose(stream);
 	free(line);
-	return lines;
+
+	printf("Max column size: %d\n",max);
+	printf("Number of lines: %d\n",lines);
+	char* contents[lines][max];
+	return contents;
 }
 
 int main(void)
 {
-	int lines = getFileLineCount("program.txt");
-     int* data = malloc(3 * sizeof(int));
+	char*  lines = getFileDimensions("program.txt");
+
 
 	char buffer[20];
-	sprintf(buffer,"%d",lines);
-	printlnMagenta(buffer);
+	//sprintf(buffer,"%d",lines);
+	//printlnMagenta(buffer);
 
 	return 0;
 }
