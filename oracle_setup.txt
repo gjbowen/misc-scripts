@@ -1,0 +1,27 @@
+/*
+    CREATING QUICK AND EASY ORACLE INSTANCE
+    setup as Direct Connection: 
+    Host - localhost (on machine)
+           ip address (VM, allow port 1521 through firewall)
+    Port - 1521 (default)
+    SID - ORCL (default)
+*/
+alter session set "_ORACLE_SCRIPT"=true;
+    
+CREATE USER gjbowen IDENTIFIED BY password
+ DEFAULT TABLESPACE USERS
+ TEMPORARY TABLESPACE TEMP
+ PROFILE "DEFAULT";
+
+GRANT ALL PRIVILEGES TO gjbowen;
+
+create or replace directory ext_tab_dir as 'C:\Users\gjbowen\Downloads\ext_tab_dir';
+GRANT READ,write ON DIRECTORY ext_tab_dir TO gjbowen;
+
+CREATE TABLE people(
+    pidm NUMBER NOT NULL,
+    cwid varchar2(8) NOT NULL,
+    first_name VARCHAR2(50) NOT NULL,
+    last_name VARCHAR2(50) NOT NULL,
+    mi varchar2(1)
+);
