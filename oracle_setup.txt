@@ -2,7 +2,7 @@
     CREATING QUICK AND EASY ORACLE INSTANCE
     setup as Direct Connection: 
     Host - localhost (on machine)
-           ip address (VM, allow port 1521 through firewall)
+           ip address (VM, allow port 1521 through firewall with Bridged Network)
     Port - 1521 (default)
     SID - ORCL (default)
 */
@@ -25,3 +25,29 @@ CREATE TABLE people(
     last_name VARCHAR2(50) NOT NULL,
     mi varchar2(1)
 );
+
+drop table people; 
+
+CREATE TABLE people
+(
+    pidm NUMBER NOT NULL,
+    cwid varchar2(8) NOT NULL,
+    first_name VARCHAR2(50) NOT NULL,
+    last_name VARCHAR2(50) NOT NULL
+)
+ORGANIZATION EXTERNAL
+  (  TYPE ORACLE_LOADER
+     DEFAULT DIRECTORY ext_tab_dir
+     ACCESS PARAMETERS 
+       ( RECORDS DELIMITED BY newline
+         FIELDS TERMINATED BY ','
+         OPTIONALLY ENCLOSED BY '"'
+         MISSING FIELD VALUES ARE NULL
+        ( pidm, cwid, first_name,last_name
+         )
+            )
+     LOCATION (ext_tab_dir:'people.csv')
+  )
+REJECT LIMIT UNLIMITED;
+
+select * from people;
